@@ -11,6 +11,7 @@
 import { type CallToolResult, getFileUri, ProtocolError, ProtocolErrorCode, type ToolModule, writeFile } from '@mcp-z/server';
 import { existsSync } from 'fs';
 import { basename } from 'path';
+import { fileURLToPath } from 'url';
 import { type PngPageOutput, pdfToPng } from 'pdf-to-png-converter';
 import { z } from 'zod';
 import type { StorageExtra } from '../../types.ts';
@@ -25,7 +26,7 @@ const pagesSchema = z
   .describe('Pages to render: single number (e.g., 1), array (e.g., [1, 3, 5]), or "all". Default: 1');
 
 const inputSchema = z.object({
-  pdfPath: z.string().describe('Absolute path to the PDF file'),
+  pdfPath: z.string().describe('Absolute path to the PDF file, or the file:// URI pdf-document and pdf-layout return'),
   pages: pagesSchema,
   viewportScale: z.number().min(0.1).max(3.0).optional().describe('Scale factor for the image. Recommended: 0.25 (thumbnail, ~150px wide, smallest), 0.5 (preview, ~300px wide, good balance), 1.0 (full size, ~612px wide). Default: 0.5'),
 });
@@ -73,7 +74,9 @@ export default function createTool() {
   async function handler(args: Input, extra: StorageExtra): Promise<CallToolResult> {
     const { storageContext } = extra;
     const { resourceStoreUri, baseUrl, transport } = storageContext;
-    const { pdfPath, pages = 1, viewportScale = 0.5 } = args;
+    const { pages = 1, viewportScale = 0.5 } = args;
+    // Kvant fork: the other tools answer with a file:// URI; take it as given.
+    const pdfPath = args.pdfPath.startsWith('file://') ? fileURLToPath(args.pdfPath) : args.pdfPath;
 
     try {
       // Validate PDF exists
@@ -144,8 +147,13 @@ export default function createTool() {
         totalPages: images.length,
       };
 
+      // Kvant fork: the rendered pages also travel as image content, so the agent sees the
+      // result itself instead of a file path it may have no tool to open.
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }],
+        content: [
+          { type: 'text' as const, text: JSON.stringify(result, null, 2) },
+          ...pngPages.map((page) => ({ type: 'image' as const, data: (page.content as Buffer).toString('base64'), mimeType: 'image/png' })),
+        ],
         structuredContent: result,
       };
     } catch (error) {
