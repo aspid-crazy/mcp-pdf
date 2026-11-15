@@ -28,7 +28,7 @@ function activate(context) {
                 const sub = vscode.workspace.getConfiguration(CONFIG).get('outputFolder', 'pdf');
                 const out = path.resolve(folder.uri.fsPath, sub);
                 const definition = new vscode.McpStdioServerDefinition(
-                    'PDF',
+                    'PDF Builder',
                     process.execPath,
                     [path.join(context.extensionPath, 'server', 'bin', 'server.js'), '--resource-store-uri', out, '--log-level', 'warn'],
                     { ELECTRON_RUN_AS_NODE: '1' },

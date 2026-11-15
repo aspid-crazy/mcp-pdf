@@ -15,7 +15,7 @@ Text in any script the font covers, Cyrillic included; images from files or http
 The extension registers [mcp-pdf](https://github.com/mcp-z/mcp-pdf) (our fork:
 <https://github.com/aspid-crazy/mcp-pdf>) with the editor. It runs on the editor's own
 Node: Node.js and npx are not needed. The server appears in **MCP: List Servers** as
-**PDF**.
+**PDF Builder**.
 
 Files go to the **`kvantPdfMcp.outputFolder`** folder (default `pdf`) of the first
 workspace folder.
