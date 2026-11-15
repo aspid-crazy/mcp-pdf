@@ -1,0 +1,40 @@
+{
+  "name": "pdf-mcp",
+  "displayName": "PDF Builder MCP",
+  "description": "PDF documents for the chat agent: text, Markdown, images, colors and positioned layouts, with every page rendered back to an image so the agent sees the result.",
+  "version": "3.4.0",
+  "publisher": "kvant",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aspid-crazy/mcp-pdf"
+  },
+  "engines": {
+    "vscode": "^1.101.0"
+  },
+  "categories": ["AI", "Other"],
+  "keywords": ["mcp", "pdf", "report", "layout"],
+  "main": "./extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "mcpServerDefinitionProviders": [
+      {
+        "id": "kvant.pdf-mcp",
+        "label": "PDF builder"
+      }
+    ],
+    "configuration": {
+      "title": "PDF Builder MCP",
+      "properties": {
+        "kvantPdfMcp.outputFolder": {
+          "type": "string",
+          "default": "pdf",
+          "description": "Folder for generated PDFs and page images, relative to the first workspace folder."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node build.mjs"
+  }
+}

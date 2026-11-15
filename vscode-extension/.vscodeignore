@@ -1,0 +1,11 @@
+build.mjs
+*.vsix
+server/package-lock.json
+server/node_modules/**/*.map
+server/node_modules/**/*.d.ts
+server/node_modules/**/*.d.mts
+server/node_modules/**/*.d.cts
+server/node_modules/pdfjs-dist/web/**
+server/node_modules/pdfjs-dist/types/**
+server/node_modules/pdfjs-dist/image_decoders/**
+server/dist/**/*.map
